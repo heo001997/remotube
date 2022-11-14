@@ -1,60 +1,28 @@
 class VideosController < ApplicationController
-  before_action :set_video, only: [:show, :update, :destroy]
+  AS_JSON_VIDEO_ATTRS = %i(id title description video_id like_count view_count)
 
-  def show
-    render json: {
-      status: Settings.http_status.ok,
-      records: @video
-    }
-  end
+  before_action :is_authenticated, only: [:destroy]
 
   def index
-    @videos = Video.page(1).per(10)
-    render json: {
-      status: Settings.http_status.ok,
-      records: @videos
+    @videos = Video.page(params[:page] || DEFAULT_PAGE).per(params[:per_page] || DEFAULT_PER_PAGE)
+                   .order(created_at: :desc)
+                   .includes(:user)
+    render status: Settings.http_status.ok, json: {
+      records: @videos.as_json(
+        only: AS_JSON_VIDEO_ATTRS,
+        include: {
+          user: {
+            only: %i(id email)
+          }
+        }
+      )
     }
   end
 
   def create
-    @video = Video.new(video_params)
-    if @video.save
-      render json: {
-        status: Settings.http_status.ok,
-        records: @video
-      }
-    else
-      render json: {
-        status: Settings.http_status.bad_request,
-        errors: @video.errors
-      }
-    end
+    @video = Videos::CreateService.new(params, current_user).execute
+    return render json: { records: @video.as_json(only: AS_JSON_VIDEO_ATTRS) }, status: Settings.http_status.ok if @video
+
+    render_bad_request(@video)
   end
-
-  def update
-    if @video.update(video_params)
-      render json: @video
-    else
-      render json: {
-        status: Settings.http_status.bad_request,
-        errors: @video.errors
-      }
-    end
-  end
-
-  def destroy
-    if @video.destroy
-      render json: { status: Settings.http_status.no_content }
-    end
-  end
-
-  private
-
-    def set_video
-      @video = Video.find(params[:id])
-    end
-
-    def video_params
-      params.require(:video).permit(:id, :title, :description, :video_url)
-    end
 end
