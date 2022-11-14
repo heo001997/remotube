@@ -1,6 +1,8 @@
 # Remotube Overview
 
-This is Remotube a video sharing platform
+(Backend) This is Remotube a video sharing platform
+
+(Frontend) [VueRemotube here](https://github.com/heo001997/remotube-vue)
 
 * Ruby version: 2.7.2
 
