@@ -34,7 +34,14 @@ gem 'kaminari'
 # Paging
 gem 'faraday'
 
+# Web server
+gem "unicorn"
+
 group :development, :test do
+  # Remote multi-server automation tool
+  gem "capistrano"
+  gem "capistrano-rails"
+  gem "capistrano-rvm"
   # Debug
   gem 'pry', '~> 0.13.1'
   gem 'faker'
