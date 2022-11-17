@@ -84,6 +84,8 @@
 
 * Create app/service folder to manage services.
 
+* Deploy by using Capistrano + Unicorn + Nginx
+
 ## Contact
 
 * Comments and feedbacks are welcome.
