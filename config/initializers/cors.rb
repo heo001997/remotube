@@ -9,13 +9,10 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     if Rails.env.development?
       origins '*'
-      resource '*', headers: :any, methods: [:get, :post, :patch, :put]
+      resource '*', headers: :any, methods: :any
     else
-      origins 'example.com'
-
-      resource '*',
-               headers: :any,
-               methods: [:get, :post, :put, :patch, :delete, :options, :head]
+      origins 'https://remotube.bamidev.com'
+      resource '*', headers: :any, methods: [:get, :post, :put, :patch, :delete, :options, :head]
     end
   end
 end
