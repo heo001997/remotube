@@ -7,9 +7,6 @@ set :repo_url, "git@github.com:heo001997/remotube.git"
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, "/home/heo001997/deploy/#{fetch(:application)}"
 
-# Default branch is :master
-ask :branch, "master"
-
 # Default value for :linked_files is []
 append :linked_files
 

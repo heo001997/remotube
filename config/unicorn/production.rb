@@ -1,16 +1,22 @@
-app_path = "/home/heo001997/deploy/remotube/current"
-working_directory app_path
+app_dir = "/home/heo001997/deploy/remotube/current"
+working_directory app_dir
+log_dir = "#{app_dir}/log"
+tmp_dir = "#{app_dir}/tmp"
 
-pid "#{app_path}/tmp/pids/unicorn.pid"
-
-stderr_path "#{app_path}/log/unicorn.err.log"
-stdout_path "#{app_path}/log/unicorn.out.log"
-
-worker_processes 3
-timeout 30
+# Set unicorn options
+worker_processes 4
 preload_app true
+timeout 30
 
-listen "#{app_path}/tmp/sockets/unicorn.sock", backlog: 64
+# Set up socket location
+listen "#{tmp_dir}/sockets/unicorn.sock", :backlog => 64
+
+# Logging
+stderr_path "#{log_dir}/unicorn.stderr.log"
+stdout_path "#{log_dir}/unicorn.stdout.log"
+
+# Set master PID location
+pid "#{tmp_dir}/pids/unicorn.pid"
 
 before_exec do |_|
   ENV["BUNDLE_GEMFILE"] = File.join(app_path, "Gemfile")
@@ -19,7 +25,7 @@ end
 before_fork do |server, worker|
   defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
 
-  old_pid = "#{app_path}/tmp/pids/unicorn.pid.oldbin"
+  old_pid = "#{tmp_dir}/pids/unicorn.pid.oldbin"
 
   if File.exists?(old_pid) && server.pid != old_pid
     begin
